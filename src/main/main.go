@@ -2,15 +2,17 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	myr "router"
+	myrounter "router"
 )
 
 func main()  {
-	//db.Main()
+	//orders := model.GetOrders()
+	//print((*orders)[0].FileUrl)
+
 	router := gin.Default()
 	router.LoadHTMLGlob("src/templates/*")
 
-	myr.InitializeRoutes(router)
+	myrounter.InitializeRoutes(router)
 
 	router.Run()
 

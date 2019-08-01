@@ -2,25 +2,15 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	 "net/http"
+	"hander"
 )
 
 func InitializeRoutes(router *gin.Engine) {
 
 	// Handle the index route
-	router.GET("/", showIndexPage)
+	router.GET("/", hander.ShowIndexPage)
+
+	// Handle GET requests at /article/view/some_article_id
+	router.GET("/order/view/:order_id", hander.GetOrder)
 }
 
-func showIndexPage(c *gin.Context)  {
-	// Call the HTML method of the Context to render a template
-	c.HTML(
-		// Set the HTTP status to 200 (OK)
-		http.StatusOK,
-		// Use the index.html template
-		"index.html",
-		// Pass the data that the page uses (in this case, 'title')
-		gin.H{
-			"title": "Home Page",
-		},
-	)
-}

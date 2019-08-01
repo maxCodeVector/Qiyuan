@@ -1,6 +1,8 @@
 package model
 
 import (
+	"db"
+	"errors"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -19,14 +21,24 @@ func (Order) TableName() string {
 	return "demo_order"
 }
 
-func Main() {
-	db, err := gorm.Open("sqlite3", "test.sqlite")
-	if err != nil {
-		panic("failed to connect database")
+func GetOrders() *[]Order {
+	conn := db.GetConnFromDB()
+
+	var orders []Order
+	// Get all records
+	conn.Find(&orders)
+	return &orders
+}
+
+func GetOrderByID(orderId string) (*Order, error) {
+	conn := db.GetConnFromDB()
+
+	order := new(Order)
+	// Get first matched record
+	err := conn.Where("order_id = ?", orderId).First(order).Error
+	if err == nil{
+		return order, nil
 	}
-	defer db.Close()
-	// Migrate the schema
-	db.AutoMigrate(&Order{})
-	db.Create(&Order{OrderId:"1223234", UserName:"hya", Amount:100, Status:"OK", FileUrl:"www.baidu.com"})
-	print("success open db")
+
+	return nil, errors.New("Order not found")
 }
