@@ -1,15 +1,16 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 )
-
-var tmpArticleList []article
 
 // This function is used for setup before executing the test functions
 func TestMain(m *testing.M) {
@@ -24,7 +25,13 @@ func TestMain(m *testing.M) {
 func getRouter(withTemplates bool) *gin.Engine {
 	r := gin.Default()
 	if withTemplates {
-		r.LoadHTMLGlob("templates/*")
+		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(dir)
+
+		r.LoadHTMLGlob("/home/qydev/prog/qiyuan/src/templates/*")
 	}
 	return r
 }
@@ -43,13 +50,3 @@ func testHTTPResponse(t *testing.T, r *gin.Engine, req *http.Request, f func(w *
 	}
 }
 
-// This function is used to store the main lists into the temporary one
-// for testing
-func saveLists() {
-	tmpArticleList = articleList
-}
-
-// This function is used to restore the main lists from the temporary one
-func restoreLists() {
-	articleList = tmpArticleList
-}

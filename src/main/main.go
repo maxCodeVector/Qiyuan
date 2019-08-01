@@ -6,8 +6,6 @@ import (
 )
 
 func main()  {
-	//orders := model.GetOrders()
-	//print((*orders)[0].FileUrl)
 
 	router := gin.Default()
 	router.LoadHTMLGlob("src/templates/*")

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"hander"
 	"io/ioutil"
+	"model"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,19 +13,13 @@ import (
 
 
 // Test the function that fetches all articles
-func TestGetAllArticles(t *testing.T) {
-	orderList := getAllOrders()
+func TestGetAllOrders(t *testing.T) {
+	orderList := model.GetOrders()
 
-	// Check that each member is identical
-	for i, v := range alist {
-		if v.Content != orderList[i].Content ||
-			v.ID != orderList[i].ID ||
-			v.Title != orderList[i].Title {
-
-			t.Fail()
-			break
-		}
+	if orderList != nil && len(*orderList) >= 0 {
+		return
 	}
+	t.Error("orderList must be iterable")
 }
 
 // Test that a GET request to the home page returns the home page with
@@ -31,7 +27,7 @@ func TestGetAllArticles(t *testing.T) {
 func TestShowIndexPageUnauthenticated(t *testing.T) {
 	r := getRouter(true)
 
-	r.GET("/", showIndexPage)
+	r.GET("/", hander.ShowIndexPage)
 
 	// Create a request to send to the above route
 	req, _ := http.NewRequest("GET", "/", nil)
