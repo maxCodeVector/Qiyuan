@@ -81,6 +81,22 @@ func HandleVerification (c *gin.Context)  {
 		print(u.Password, u.Username)
 	}
 
+}
 
+
+
+func HandleCreateOrder(c *gin.Context){
+
+}
+
+func HandleUpdateOrder(c *gin.Context){
+
+}
+
+func HandleGetOrder(c *gin.Context)  {
+
+}
+
+func HandleQueryOrders(c *gin.Context) {
 
 }

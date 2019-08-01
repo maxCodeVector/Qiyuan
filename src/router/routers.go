@@ -10,10 +10,17 @@ func InitializeRoutes(router *gin.Engine) {
 	// Handle the index route
 	router.GET("/", hander.ShowIndexPage)
 
-	// Handle GET requests at /article/view/some_article_id
-	router.GET("/order/view/:order_id", hander.GetOrder)
+	// use to create an order
+	router.PUT("/orders", hander.HandleCreateOrder)
 
-	router.POST("/api", hander.HandleVerification)
-	router.OPTIONS("/api", hander.HandleVerification)
+	// use to update an order
+	router.POST("/orders", hander.HandleUpdateOrder)
+
+	// use to get details about an order
+	router.GET("/orders/view/:order_id", hander.HandleGetOrder)
+
+	// use to get an order list by different condition
+	router.GET("/orders", hander.HandleQueryOrders)
+
 }
 
