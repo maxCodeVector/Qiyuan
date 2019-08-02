@@ -2,8 +2,9 @@ package hander
 
 import (
 	"github.com/gin-gonic/gin"
-	"model"
 	"net/http"
+	"qiyuan/model"
+	"qiyuan/service"
 )
 
 
@@ -41,11 +42,23 @@ func ShowIndexPage(c *gin.Context) {
 	)
 }
 
-func GetOrder(c *gin.Context)  {
+
+
+
+
+func HandleCreateOrder(c *gin.Context){
+
+}
+
+func HandleUpdateOrder(c *gin.Context){
+
+}
+
+func HandleGetOrder(c *gin.Context)  {
 	orderID := c.Param("order_id")
 
 	// do something to Check if the article ID is valid
-	if order, err := model.GetOrderByID(orderID); err == nil {
+	if order, err := service.GetOrderByID(orderID); err == nil {
 		// Call the relative method of the Context to render a template
 		render(
 			c,
@@ -61,40 +74,6 @@ func GetOrder(c *gin.Context)  {
 		// If the article is not found, abort with an error
 		c.AbortWithError(http.StatusNotFound, err)
 	}
-}
-
-func HandleVerification (c *gin.Context)  {
-	if c.Request.Method == "OPTIONS" {
-		// setup headers
-		c.Header("Allow", "POST, GET, OPTIONS")
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "origin, content-type, accept")
-		c.Header("Content-Type", "application/json")
-		c.Status(http.StatusOK)
-	} else if c.Request.Method == "POST" {
-		var u model.User
-		c.BindJSON(&u)
-		c.JSON(http.StatusOK, gin.H{
-			"user": u.Username,
-			"pass": u.Password,
-		})
-		print(u.Password, u.Username)
-	}
-
-}
-
-
-
-func HandleCreateOrder(c *gin.Context){
-
-}
-
-func HandleUpdateOrder(c *gin.Context){
-
-}
-
-func HandleGetOrder(c *gin.Context)  {
-
 }
 
 func HandleQueryOrders(c *gin.Context) {

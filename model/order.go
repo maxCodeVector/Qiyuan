@@ -1,10 +1,9 @@
 package model
 
 import (
-	"db"
-	"errors"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"qiyuan/db"
 )
 
 type Order struct {
@@ -22,23 +21,10 @@ func (Order) TableName() string {
 }
 
 func GetOrders() *[]Order {
-	conn := db.GetConnFromDB()
+	conn := db.GetConnFromDB("../test.sqlite")
 
 	var orders []Order
 	// Get all records
 	conn.Find(&orders)
 	return &orders
-}
-
-func GetOrderByID(orderId string) (*Order, error) {
-	conn := db.GetConnFromDB()
-
-	order := new(Order)
-	// Get first matched record
-	err := conn.Where("order_id = ?", orderId).First(order).Error
-	if err == nil{
-		return order, nil
-	}
-
-	return nil, errors.New("Order not found")
 }

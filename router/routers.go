@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"hander"
+	"qiyuan/hander"
 )
 
 func InitializeRoutes(router *gin.Engine) {

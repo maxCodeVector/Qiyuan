@@ -2,17 +2,18 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	myrounter "router"
+	myrounter "qiyuan/router"
 )
 
 func main()  {
 
 	router := gin.Default()
-	router.LoadHTMLGlob("src/templates/*")
+	router.LoadHTMLGlob("../templates/*")
 
 	myrounter.InitializeRoutes(router)
 
-	router.Run()
-
-
+	err := router.Run()
+	if err != nil {
+		print(err.Error())
+	}
 }
