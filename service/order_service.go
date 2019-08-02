@@ -6,24 +6,43 @@ import (
 	"qiyuan/model"
 )
 
-func CreateOrder(){
-
+func CreateOrder(order *model.Order){
+	conn := db.GetConnFromDB("../test.sqlite")
+	conn.Create(order)
 }
 
-func UpdateOrder(){
-
+func UpdateOrder(order *model.Order) bool{
+	conn := db.GetConnFromDB("../test.sqlite")
+	orderRecord, err := GetOrderByID(order.OrderId)
+	if err != nil{
+		return false
+	}
+	orderRecord.FileUrl = order.FileUrl
+	orderRecord.Status = order.Status
+	orderRecord.Amount = order.Amount
+	conn.Model(orderRecord).Updates(orderRecord)
+	return true
 }
 
-func QueryOrderByTime()  {
-	
+
+func DeleteOrder(order *model.Order) bool{
+	conn := db.GetConnFromDB("../test.sqlite")
+	if order.ID != 0 {
+		conn.Delete(order)
+		return true
+	}
+	return false
 }
 
-func QueryOrderByAmount()  {
+func FuzzySearchOrder(name string, orderByTime bool, orderByAmount bool)  *[]model.Order  {
 
-}
 
-func FuzzySearchOrder()  {
+	conn := db.GetConnFromDB("../test.sqlite")
+	var orders []model.Order
 
+	conn.Where("user_name = ?", name).Find(&orders)
+
+	return &orders
 }
 
 func GetOrderByID(orderId string) (*model.Order, error) {

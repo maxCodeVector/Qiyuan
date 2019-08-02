@@ -16,7 +16,7 @@ type DBConn struct {
 
 var conn *DBConn
 
-func NewDBConn(path string) * DBConn{
+func GetDBConn(path string) * DBConn{
 	if conn == nil {
 		dbLock.Lock()
 		if conn == nil {

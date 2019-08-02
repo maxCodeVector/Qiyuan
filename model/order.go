@@ -1,13 +1,14 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"qiyuan/db"
+	"time"
 )
 
 type Order struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	UpdatedAt time.Time
 	OrderId  string
 	UserName string
 	Amount   float64
