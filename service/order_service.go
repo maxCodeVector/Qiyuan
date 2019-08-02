@@ -57,3 +57,23 @@ func GetOrderByID(orderId string) (*model.Order, error) {
 
 	return nil, errors.New("Order not found")
 }
+
+
+func CheckOut(userName string) float64 {
+	conn := db.GetConnFromDB("../test.sqlite")
+	tx := conn.Begin()
+
+	var orders [] model.Order
+	tx.Where("user_name = ? and status != ?", userName, "OK").Find(&orders)
+	totalAmount := 0.
+
+	for _, order := range orders{
+		totalAmount += order.Amount
+		order.Status = "OK"
+		tx.Model(order).Updates(order)
+	}
+
+	tx.Commit()
+
+	return totalAmount
+}

@@ -1,18 +1,39 @@
 package main
 
 import (
+	"qiyuan/db"
 	"qiyuan/model"
 	"qiyuan/service"
+	"strconv"
 	"testing"
 )
 
+func beforeTest(tempName, tempOrderId string) {
+	conn := db.GetConnFromDB("../test.sqlite")
+	order := model.Order{OrderId: tempOrderId, UserName: "xyz", FileUrl:"www.youtube.com"}
+	conn.Create(&order)
+	var orders [5]model.Order
+	for i, order := range orders {
+		order.UserName = tempName
+		order.Status = "NK"
+		order.OrderId = strconv.Itoa(10087 + i)
+		order.Amount = 1000
+		conn.Save(&order)
+	}
+}
 
-func TestCreateOrder1(t *testing.T)  {
+func afterTest(tempName, tempOrderId string) {
+	conn := db.GetConnFromDB("../test.sqlite")
+	conn.Exec("delete from demo_order where user_name = ?", tempName)
+	conn.Exec("delete from demo_order where order_id = ?", tempOrderId)
+}
 
-	order := model.Order{OrderId:"1234", UserName:"xyz"}
+func TestCreateOrder1(t *testing.T) {
+
+	order := model.Order{OrderId: "10086", UserName: "xyz"}
 	service.CreateOrder(&order)
 
-	oneOrder, err := service.GetOrderByID("1234")
+	oneOrder, err := service.GetOrderByID("10086")
 	if err != nil || oneOrder == nil {
 		t.Fail()
 	}
@@ -20,22 +41,23 @@ func TestCreateOrder1(t *testing.T)  {
 	service.DeleteOrder(oneOrder)
 }
 
-func TestGetOrderByID1(t *testing.T)  {
+func TestGetOrderByID1(t *testing.T) {
 
-	oneOrder, err := service.GetOrderByID("2333")
+	beforeTest("Bob", "10086")
+	defer afterTest("Bob", "10086")
+
+	oneOrder, err := service.GetOrderByID("10086")
 	if err != nil || oneOrder == nil {
 		t.Fail()
 	}
 }
 
-func TestGetOrderByID2(t *testing.T)  {
-	_, err := service.GetOrderByID("123")
-	if err == nil{
+func TestGetOrderByID2(t *testing.T) {
+	_, err := service.GetOrderByID("10086")
+	if err == nil {
 		t.Fail()
 	}
 }
-
-
 
 // Test the function that fetches all articles
 func TestGetAllOrders(t *testing.T) {
@@ -47,9 +69,12 @@ func TestGetAllOrders(t *testing.T) {
 	t.Error("orderList must be iterable")
 }
 
-
 func TestFuzeQuery(t *testing.T) {
-	orderList := service.FuzzySearchOrder("hya", true, true)
+
+	beforeTest("Bob", "10086")
+	defer afterTest("Bob", "10086")
+
+	orderList := service.FuzzySearchOrder("Bob", true, true)
 
 	if orderList != nil && len(*orderList) >= 0 {
 		return
@@ -57,28 +82,33 @@ func TestFuzeQuery(t *testing.T) {
 	t.Error("orderList must be iterable")
 }
 
-
 func TestDeleteOrder(t *testing.T) {
+
+	beforeTest("Bob", "10086")
+	defer afterTest("Bob", "10086")
+
 	// should not delete all record when order does not have primary key
-	if service.DeleteOrder(&model.Order{}){
+	if service.DeleteOrder(&model.Order{}) {
 		t.Fail()
 	}
-	tempOrder := model.Order{ID:10086, UserName:"hello"}
-	service.CreateOrder(&tempOrder)
-	if !service.DeleteOrder(&tempOrder){
+
+	spOrder, _ := service.GetOrderByID("10086")
+	if !service.DeleteOrder(spOrder) {
+		t.Fail()
+	}
+	if _, err2 := service.GetOrderByID("10086"); err2 == nil{
 		t.Fail()
 	}
 
 }
 
-
 func TestUpdateOrder(t *testing.T) {
 
-	tempOrder := model.Order{OrderId:"10086", UserName:"hello", FileUrl:"www.youtube.com"}
-	service.CreateOrder(&tempOrder)
+	beforeTest("Bob", "10086")
+	defer afterTest("Bob", "10086")
 
 	oneOrder, err := service.GetOrderByID("10086")
-	if err != nil || oneOrder == nil || oneOrder.FileUrl != "www.youtube.com"{
+	if err != nil || oneOrder == nil || oneOrder.FileUrl != "www.youtube.com" {
 		t.Fail()
 	}
 	oneOrder.FileUrl = "www.facebook.com"
@@ -86,11 +116,26 @@ func TestUpdateOrder(t *testing.T) {
 	service.UpdateOrder(oneOrder)
 
 	oneOrder, err = service.GetOrderByID("10086")
-	if err != nil || oneOrder == nil || oneOrder.FileUrl != "www.facebook.com"{
-		service.DeleteOrder(&tempOrder)
+	if err != nil || oneOrder == nil || oneOrder.FileUrl != "www.facebook.com" {
+		t.Fail()
+	}
+}
+
+func TestCheckOut(t *testing.T) {
+
+	beforeTest("Bob", "10086")
+	defer afterTest("Bob", "10086")
+
+	totalAmount := service.CheckOut("Bob")
+	if totalAmount != 5000 {
 		t.Fail()
 		return
 	}
-	service.DeleteOrder(&tempOrder)
+
+	totalAmount = service.CheckOut("Bob")
+	if totalAmount != 0 {
+		t.Fail()
+	}
 
 }
+

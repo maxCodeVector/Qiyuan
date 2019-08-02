@@ -2,11 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"qiyuan/hander"
 )
 
 func InitializeRoutes(router *gin.Engine) {
 
+	//base requirements
 	// Handle the index route
 	router.GET("/", hander.ShowIndexPage)
 
@@ -22,5 +24,16 @@ func InitializeRoutes(router *gin.Engine) {
 	// use to get an order list by different condition
 	router.GET("/orders", hander.HandleQueryOrders)
 
+	// another requirements
+	// use to get an order list by different condition
+	router.GET("/orders/checkout", hander.HandleCheckOut)
+
+	// use to get an order list by different condition
+	router.POST("/file/upload/:order_id", hander.HandleUpload)
+
+	// use to get an order list by different condition
+	router.GET("/file/download", hander.HandleDownload)
+
+	router.StaticFS("/files", http.Dir("../file"))
 }
 

@@ -21,5 +21,12 @@
 <!--Display the title of the article-->
 <p>updateTime: {{.payload.UpdatedAt}}</p>
 
+
+ <form action="/file/upload/{{.payload.OrderId}}" enctype="multipart/form-data" method="POST">
+        
+        <input type="file" name="file" id="pic" accept="*" />
+        <button type="submit">Submit</button>
+    </form>
+
 <!--Embed the footer.html template at this location-->
 {{ template "footer.html" .}}
