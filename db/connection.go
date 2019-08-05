@@ -7,34 +7,30 @@ import (
 )
 
 var dbLock sync.Mutex
-
-type DBConn struct {
-	name string
-	db *gorm.DB
-}
+var dbConnMap map[string]*gorm.DB
 
 
-var conn *DBConn
-
-func GetDBConn(path string) * DBConn{
-	if conn == nil {
+func GetConnFromDB(dbPath string) *gorm.DB {
+	if dbConnMap == nil{
+		dbConnMap = make(map[string]*gorm.DB)
+	}
+	_, ok := dbConnMap[dbPath ]
+	if !ok {
 		dbLock.Lock()
-		if conn == nil {
-			conn.db = GetConnFromDB(path)
-			conn.name = path
+		_, ok := dbConnMap[dbPath ]
+		if !ok {
+			dbConnMap[dbPath] = openDBConn(dbPath)
 		}
 		dbLock.Unlock()
 	}
-	return conn
+	dbConn, _ := dbConnMap[dbPath ]
+	return dbConn
 }
 
-
-func GetConnFromDB(dbpath string) *gorm.DB {
-	db, err := gorm.Open("sqlite3", dbpath)
+func openDBConn(dbPath string) *gorm.DB {
+	db, err := gorm.Open("sqlite3", dbPath)
 	if err != nil {
 		panic("failed to connect database")
 	}
 	return db
 }
-
-

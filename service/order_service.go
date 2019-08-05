@@ -40,8 +40,14 @@ func FuzzySearchOrder(name string, orderByTime bool, orderByAmount bool)  *[]mod
 	conn := db.GetConnFromDB("../test.sqlite")
 	var orders []model.Order
 
-	conn.Where("user_name = ?", name).Find(&orders)
-
+	res := conn.Where("user_name like ?", "%"+name+"%")
+	if orderByTime {
+		res = res.Order("updated_at desc")
+	}
+	if orderByAmount {
+		res = res.Order("amount desc")
+	}
+	res.Find(&orders)
 	return &orders
 }
 
@@ -58,7 +64,9 @@ func GetOrderByID(orderId string) (*model.Order, error) {
 	return nil, errors.New("Order not found")
 }
 
-
+/**
+* check out all none OK order for this person with userName @userName, return the total checkout amount
+*/
 func CheckOut(userName string) float64 {
 	conn := db.GetConnFromDB("../test.sqlite")
 	tx := conn.Begin()
