@@ -15,8 +15,11 @@
 <!--Display the content of the article-->
 <p>status: {{.payload.Status}}</p>
 
-<!--Display the content of the article-->
-<p>fileURL: {{.payload.FileUrl}}</p>
+
+<a href="{{.payload.FileUrl}}">
+    <!--Display the content of the article-->
+    <p>file Download Here </p>
+</a>
 
 <!--Display the title of the article-->
 <p>updateTime: {{.payload.UpdatedAt}}</p>

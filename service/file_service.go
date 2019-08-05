@@ -17,7 +17,7 @@ func UploadFile(orderId string, file io.Reader, fileName string) string {
 	if err != nil {
 		return ""
 	}
-	filePath := "http://127.0.0.1:8000/file/" + fileName
+	filePath := "http://127.0.0.1:8080/files/" + fileName
 
 	if order, err := GetOrderByID(orderId); err == nil{
 		order.FileUrl = filePath
