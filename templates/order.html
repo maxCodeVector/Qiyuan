@@ -3,25 +3,18 @@
 <!--Embed the header.html template at this location-->
 {{ template "header.html" .}}
 
-<!--Display the title of the article-->
 <h1>order Id: {{.payload.OrderId}}</h1>
 
-<!--Display the content of the article-->
 <p>userName: {{.payload.UserName}}</p>
 
-<!--Display the content of the article-->
 <p>amount: {{.payload.Amount}}</p>
 
-<!--Display the content of the article-->
 <p>status: {{.payload.Status}}</p>
 
+<p>file Download
+    <a href="/file/download?fileUrl={{.payload.FileUrl}}">Here</a>
+</p>
 
-<a href="{{.payload.FileUrl}}">
-    <!--Display the content of the article-->
-    <p>file Download Here </p>
-</a>
-
-<!--Display the title of the article-->
 <p>updateTime: {{.payload.UpdatedAt}}</p>
 
 

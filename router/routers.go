@@ -2,7 +2,6 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"qiyuan/hander"
 )
 
@@ -34,6 +33,7 @@ func InitializeRoutes(router *gin.Engine) {
 	// use to get an order list by different condition
 	router.GET("/file/download", hander.HandleDownload)
 
-	router.StaticFS("/files", http.Dir("../file"))
+	router.GET("/orders/export", hander.HandleExport)
+
 }
 

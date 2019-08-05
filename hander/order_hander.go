@@ -213,5 +213,18 @@ func HandleUpload(c *gin.Context) {
 }
 
 func HandleDownload(c *gin.Context) {
+	fileName := c.Query("fileUrl")
+	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+	//fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+	c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	c.File("../"+fileName)
+}
 
+func HandleExport(c *gin.Context){
+	outFile := "../file/order.xlsx"
+	service.ExportData(outFile)
+	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", outFile))
+	//fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+	c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	c.File(outFile)
 }

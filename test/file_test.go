@@ -23,10 +23,10 @@ func TestUpload(t *testing.T) {
 
 }
 
-func TestDownload(t *testing.T) {
+func TestExportData(t *testing.T) {
+
 	beforeTest("Bob", "10086")
 	defer afterTest("Bob", "10086")
 
 
 }
-
